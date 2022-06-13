@@ -28,80 +28,122 @@ Feature
 |DFA|Signal fractal scaling exponent|
 |SPREAD1, SPREAD2, PPE| Three nonlinear measures of fundamental frequency variation|
 
+# Distribution of features
 The distribution of these features varies between individuals with the disease and those without the disease. The orange bars in the barcharts below represents individuals with the disease and the blue bars represents individuals without the disease. There is a clear differnce in the level of voice features in the two groups. This difference is what will be used in the classification of individuals into PD positive and PD negetive status.
-![Picture1](https://user-images.githubusercontent.com/95732821/169638157-432b5e67-a6a0-44ab-9f5e-cabdecbcd2d6.png)
 
-A data classification was performed on the above features using KNN,LGBM and XGB classification models. All three models were tuned and evaluated
+![bar1](https://user-images.githubusercontent.com/95732821/173400202-d8b17865-07d5-4d14-9838-eda73296fa32.png)
+|Features|Level in PD POSITIVE| Level in PD NEGATIVE
+|--------|-----------|------------|
+|**MDVP:fo(HZ):**|lower| higher|             
+|**MDVP:fhi(HZ)**|lower| higher|
+|**MDVP:Flo(HZ):**|lower|higher|             
+|**MDVP:Jitter(%)**|higher|lower|
 
-## Model Evaluation
+![bar2](https://user-images.githubusercontent.com/95732821/173400234-b068e169-bac9-4c77-876d-9830194d1fd5.png)
+|Features|Level in PD POSITIVE| Level in PD NEGATIVE
+|--------|-----------|------------|
+|**MDVP:jitter(Abs)**|higher|lower|             
+|**MDVP:RAP**|higher|lower|
+|**MDVP:PPQ**|higher|lower|             
+|**Jitter:DDP**|higher|lower|
+
+![bar3](https://user-images.githubusercontent.com/95732821/173400270-64788360-bf61-4b72-b450-6b23d2f1c34f.png)
+|Features|Level in PD POSITIVE| Level in PD NEGATIVE
+|--------|-----------|------------|
+|**MDVP:Shimmer**|higher|lower|             
+|**MDVP:Shimmer(dB)**|higher|lower|
+|**Shimmer:APQ3**|higher|lower|             
+|**Shimmer:APQ5**|higher|lower|
+
+![bar4](https://user-images.githubusercontent.com/95732821/173400306-e3f7d7cc-6a16-45e2-8b40-0f102f324bee.png)
+|Features|Level in PD POSITIVE| Level in PD NEGATIVE
+|--------|-----------|------------|
+|**MDVP:APQ**|higher|lower|             
+|**Shimmer:DDA**|higher|lower|
+|**NHR:**|higher|lower|             
+|**HNR:**|lower|higher|
+
+![bar5](https://user-images.githubusercontent.com/95732821/173400332-90825d9f-358b-4a66-93c2-1a93fc137076.png)
+|Features|Level in PD POSITIVE| Level in PD NEGATIVE
+|--------|-----------|------------|
+|**RPDE:**|higher |lower|
+|**DFA:**|higher|lower|
+|**Spread1:**|higher |lower|             
+|**Spread2:**|higher|lower|
+
+![bar6](https://user-images.githubusercontent.com/95732821/173400358-95c32ef6-0d0e-45ed-b812-6247c17fa4fe.png)
+|Features|Level in PD POSITIVE| Level in PD NEGATIVE
+|--------|-----------|------------|
+|**D2:**|higher|lower|             
+|**PPE:**|higher|lower|
+
+
+
+# Model Evaluation
 
 **Error Types**
-In every binary classification problem, there is always a 'positive' class and a 'negative' class. The positive class should be the one you are most interested in findingis usually the group of interest. For this Parkinson's disease dataset, the positive class will be the presence of Parkinson's disease and the negative class will be the absence of parkinson's disease.
 
-**Type 1 error:** If our model predicts the presence of Parkinson's disease, when there is' no disease present, it will have made a type 1 error. This is also known as a false positive.
+In every binary classification problem, there is always a 'positive' class and a 'negative' class. The positive class should be the one you are most interested in finding , it is usually the group of interest. For this Parkinson's disease dataset, the positive class will be the presence of Parkinson's disease and the negative class will be the absence of parkinson's disease.
 
-**Type 2 error:** If our model predicts that there is an absence of Parkinson's disease, when the disease is present, it will have made a type 2 error. This is is also known as a false negative.
+>-**Type 1 error:** If our model predicts the presence of Parkinson's disease, when there is' no disease present, it will have made a type 1 error. This is also known as a false positive.
+
+>-**Type 2 error:** If our model predicts that there is an absence of Parkinson's disease, when the disease is present, it will have made a type 2 error. This is is also known as a false negative.
 
 
-### Evaluation Metrics
+## Evaluation Metrics
 
-Accuracy Scores
-Accuracy is the metric that is most intuitive.
-
-This is defined as:
-
+### Accuracy
 ![image](https://user-images.githubusercontent.com/95732821/169638957-d64f1e1e-a398-422a-bfe5-afa358dab1af.png)
 
+This is the metric to use when:
 
-In other words accuracy is correct predictions the model made out of the total number of predictions.
+>The cost of False Positive and False Negative are roughly equal
 
-Pros: Accuracy is easy to understand and gives a combined picture of both kinds of errors in one number.
+>The benefit of a True Positive and a True Negative are roughly equal
 
-Cons: Accuracy can be deceiving when a dataset is unbalanced. It also does not give specific information about the kinds of errors that a model is making.
-
-For example,  If the dataset were imbalanced, say 99.9% positive, then a prediction that EVERYTHING is positive would have a very high accuracy. However, that would not be a very useful model for actual medical use. More often we see the opposite: a disease is very rare, occurring .01% of the time or less, and a model that predicts that NO samples ever have the disease will have a high accuracy, but will actually be useless and quite dangerous!
-
-**Recall Scores**
-In order to reduce the number of false negatives,the recall scores needs to be improved.
-
-Recall is defined as:
+### Recall
 ![image](https://user-images.githubusercontent.com/95732821/169638957-d64f1e1e-a398-422a-bfe5-afa358dab1af.png)
 
-It simply asks the question: how many samples did the model label as positive out of all of the true positive samples?
+Using sensitivity and specificity aims to keep the number of False Negative and False Positive respectively as low as possible since we might want to increase the model sensitivity. Recall is the metric to use when:
 
-Pros: A higher recall means a fewer false negative predictions, also known as type 2 errors. It's ideal for instances where the classification of a positive as a negative is a costly error.
+>The cost of False Negative is much higher than a False Positive
 
-Cons: Does not consider how many samples |are falsely labeled as positive, or false positives. It does not penalize type 1 errors.
+>The cost of a True Negative is much higher than a True Positive
 
-In the case of this dataset, The consequence of predicting a false negative is grevious, as this will prevent the individual seeking for help before the disease reaches the degenerative stage, depriving the individual of a fighting chance against the disease. Therefore it is better to have a model that predicts more false positives than false negatives.  
-
-**Precision Scores**
-When the number of false positives needs to be reduced, the precision score is being improved.
-Precision is defined as:
-
+### Precision
 ![image](https://user-images.githubusercontent.com/95732821/169639653-692b2103-c435-49a9-92b6-d34099f28a9b.png)
 
-In other words: What ratio of the samples predicted in the positive class were truelly in the positive class?
+This is the metric to use when:
 
-Pros: A high precision means fewer type 1 errors, or fewer false positives. This is a good metric to maximize if a false positive prediction is a costly error.
+>The cost of a False Positive is much higher than a False Negative
 
-Cons: Precision does not penalize a model for false negatives. It does not count type 2 errors.
+>The Benefit of a True Positive is much higher than a True Negative
 
-In this case precision would be measuring how many of the individuals diagnosed with Parkinson's disease, actually had the disease.
+## Chosen Evaluation Metric
+When it comes to predicting diseases, the false negative error can be griveously costly, It is better to predict the presence of a disease falsely than to predict the absence of a disease falsely. It is always better to have a model that has zero amount of false positive error than the false negative error.
+This project aims at training a model to identify if a patient has a parkinson's disease or not, a False Negative might might delay the treatment of the patient, which might even lead to death, because a quick identification of a disease could help for a better treatment. On the other hand, a False Positive may only lead to additional tests which might be financially costly but not as costly as the life of a human being. That being said, the chosen evaluation metric will be the **recall score.**, which focuses on the type 2 error. It emphasizes on the false negative error, which is the center of attention in evaluating the performance of our models.
 
-|KNN Model|	LGBM Model|	XGB Model|
-|---------|-----------|----------|
-| 	 	![image](https://user-images.githubusercontent.com/95732821/169640422-73155f6e-7fe9-434d-9a25-d9db0c4a980e.png)|![image](https://user-images.githubusercontent.com/95732821/169640438-bf341f1e-ba55-4963-ab45-0e87625bf56a.png)|![image](https://user-images.githubusercontent.com/95732821/169640448-aa088848-f890-493f-843b-9aead9cd885b.png)|
-It can be seen here how each model predicted the testing set. The KNN model made about 27% wrong predictions, It predicted the individuals asnegative, when they are actually positive. The LGBM did much better by predicting just about 3% as false negatives, while the XGB model's performance is not as good as the LGB model, it is slightly lower than the KNN, it made 12 false negative predictions.
+# Models
+A data classification was performed on the data set using KNN,LGBM and XGB classification models. All three models were tuned and evaluated and the performance are being displayed in the maps below.
 
-![image](https://user-images.githubusercontent.com/95732821/169640513-9ee6ba5e-48f2-4f16-81c5-dcf1368ce6b5.png)
-The 
-![image](https://user-images.githubusercontent.com/95732821/169641860-b60b85c7-8041-4c89-9420-5384cbafe682.png)
-![image](https://user-images.githubusercontent.com/95732821/169641883-bc877fd8-dcc8-4043-bca6-9b6672283a90.png)
+# Confusion map displaying the prediction performance of the model 
+![knnn_image](https://user-images.githubusercontent.com/95732821/173371838-cfb5ef9e-151b-4b03-8136-56c39042453e.png)
+
+ The KNN model made no errors on the training set but it had a 0% false negative error and a 33% false positive error on the testing set.
+![lgbm_image](https://user-images.githubusercontent.com/95732821/173372159-72e3d42b-584e-4aab-a70c-02a8b4eb441a.png)
+
+The LGBM model made all predictions accurately on the training set, but it made about 3% false negative error on the testing set.
+![xgb_image](https://user-images.githubusercontent.com/95732821/173372244-a44f95eb-fac2-406f-ae01-2d9a05100cef.png)
+
+The XGB model made all predictions accurately on the training set. As for the testing set, the model also made about 3% false negative errors on the testing set.
+
+# Results
+![image](https://user-images.githubusercontent.com/95732821/173372728-07cb0b19-23ee-4477-bb2d-32cac76359d6.png)
+
+All three models performed well on the training set. As for the testing set,the KNN model performed the best with a recall score of 1, it made no false negative error, which would have been very costly. The LGBM and XGB model had same recall score of 0.97
 
 # Conclusion
-All three models performed well on both the train and test set, but LGBM classifier had the highest accuracy score of 97% on the test set, which is just 2.7 less than the 100% score on the train set. Therefore the most suitable model out of all three models for the prediction of early stage parkinson disease in individuals is the LGBM 
-
+Three models, KNN, LGBM,and XGB, were built and tunned for the detection of early stage parkinson's disease, out of these models, the KNN model is the most suitable model with a high recall score of 1.
 # Recommendations
-The LGBM Model is reccomended due to having the highest Accuracy, Recall, and Precision Scores.
-Accurate prediction can lead to early diagnosis and treatment. Inaccurate prediction can delay diagnosis and treatment, which can be detrimental to the individual.
+The primary rationales for early detection and initiation of treatment in patients with PD include slowing disease progression, delaying and diminishing symptoms (both motor and nonmotor), limiting deterioration of patient quality of life (QoL), and achieving long-term cost savings.The KNN model, with its tunned parameters can be used to accurately predict the early stage of Parkinson's disease in individuals, using the voice analysis. 
+
